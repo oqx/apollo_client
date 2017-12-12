@@ -1,0 +1,7 @@
+.grid {
+	display: flex;
+
+	&__col-auto {
+		flex: 1 auto;
+	}
+}

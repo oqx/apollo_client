@@ -1,0 +1,27 @@
+.hd {
+  font-weight: 200;
+  letter-spacing: 2px;
+
+  &--3 {
+    font-size: 22px;
+  }
+
+  &--primary {
+    color: $brand-primary;
+  }
+  
+  &--rule {
+    position: relative;
+    margin-bottom: 44px;
+
+    &::before {
+      background: $brand-tertiary;
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 4px;
+      top: calc(100% + 8px);
+      left: 0;
+    }
+  }
+}

@@ -1,0 +1,96 @@
+.event-details {
+  background: rgba(46, 61, 74, 0.9);
+  border: 1px solid $brand-primary;
+  color: $brand-primary;
+  font-weight: 200;
+  font-size: 14px;
+  display: block;
+  padding: 24px;
+  position: absolute;
+	transform: translate3d(0,0,0);
+  transition: ease all 0.3s;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translate3d(0,0,0);
+	z-index: map-get($z-index, event-details);
+
+  @media(min-width: map-get($breakpoints, sm)) {
+		height: 600px;
+    width: 340px;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(0,0,0) translateY(-50%) translateX(-50%);
+  }
+
+	&__hidden {
+		position: absolute;
+		opacity: 0;
+		transform: translateY(-2000px);
+		visibility: hidden;
+	}
+
+  &__info {
+    background: $brand-primary;
+    border-radius: 4px;
+    color: $brand-secondary;
+    font-weight: 600;
+    padding: 6px;
+    display: flex;
+    text-transform: uppercase;
+  }
+
+  &__col-date {
+    flex: 1;
+    text-align: right;
+  }
+
+  &\@geo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 6px;
+    text-align: right;
+    width: 100%;
+
+    &__distance {
+      color: $brand-primary;
+      font-weight: 600;
+      padding: 8px;
+      border-radius: 4px;
+    }
+  }
+
+  &__close {
+    color: $brand-primary;
+    cursor: pointer;
+
+		display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    width: 24px;
+    height: 24px;
+    z-index: 402;
+    &:hover {
+      color: $brand-tertiary;
+    }
+  }
+
+  &\@list {
+    color: white;
+    letter-spacing: 2px;
+    list-style: none;
+    padding-left: 0;
+    padding-top: 12px;
+    &__item {
+      border-top: 1px solid lighten($brand-utility, 18%);
+      padding: 12px 0;
+    }
+  }
+}

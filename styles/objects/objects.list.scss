@@ -1,0 +1,30 @@
+.ul {
+  list-style-type: none;
+  &.is-paddingless {
+    padding: 0;
+  }
+  &--horizontal {
+    padding-left: 0;
+    .ul__li {
+      display: inline-block;
+      margin-right: 24px;
+      &:last-of-type {
+        margin-right: 0;
+      }
+    }
+  }
+  &__li {
+    line-height: 1.5;
+
+    &.has-icon {
+      position: relative;
+      text-indent: 18px;
+      > .icon {
+        position: absolute;
+        top: 50%;
+        right: calc(100% - 12px);
+        transform: translateY(-50%);
+      }
+    }
+  }
+}

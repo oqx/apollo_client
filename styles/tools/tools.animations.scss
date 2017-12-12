@@ -1,0 +1,14 @@
+@keyframes pulse {
+  0% {
+    border-color: mix($brand-primary, $brand-tertiary, 55%);
+    box-shadow: 0 0 4px 0 mix($brand-primary, $brand-tertiary, 55%);
+  }
+  50% {
+    border-color: darken($brand-tertiary, 40%);
+    box-shadow: 0 0 12px 0 $brand-tertiary;
+  }
+  100% {
+    border-color: mix($brand-primary, $brand-tertiary, 55%);
+    box-shadow: 0 0 4px 0 mix($brand-primary, $brand-tertiary, 55%);
+  }
+}

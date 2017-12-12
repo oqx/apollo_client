@@ -1,0 +1,49 @@
+.footer {
+	$config: (
+		background: $brand-utility,
+		border-color: $brand-utlity--accent,
+		color: $brand-tertiary,
+		font-size: 12px,
+		footer-height: 36px
+	);
+
+	background: map-get($config, background);
+	border-top: 1px solid map-get($config, border-color);
+	color: map-get($config, color);
+
+	display: flex;
+	align-items: center;
+
+	font-size: map-get($config, font-size);
+	height: map-get($config, footer-height);
+	letter-spacing: 3px;
+
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	padding: 0 24px;
+	z-index: map-get($z-index, footer);
+
+	&__loader {
+		animation: border-loader 1s infinite;
+		height: 6px;
+		position: fixed;
+		bottom: map-get($config, footer-height);
+		left: 0;
+		right: 0;
+		z-index: map-get($z-index, footer);
+
+		background: linear-gradient(270deg, $brand-primary, $brand-tertiary);
+		background-size: 400% 400%;
+
+		animation: gradient 3s ease infinite;
+	}
+}
+
+@keyframes gradient {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}

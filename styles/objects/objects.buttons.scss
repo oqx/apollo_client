@@ -1,0 +1,108 @@
+.btn {
+
+	$config: (
+		primary: (
+			border: $brand-tertiary,
+			bg: rgba($brand-tertiary, 0.15),
+			hover: darken($brand-tertiary, 25%),
+			text: $brand-tertiary
+		),
+    secondary: (
+      border: $brand-primary,
+      bg: rgba($brand-primary, 0.15),
+      hover: darken($brand-primary, 25%),
+      text: $brand-primary
+    )
+	);
+
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 12px 20px;
+  position: relative;
+  text-decoration: none;
+  transition: ease background 0.3s, ease border 0.3s;
+
+  &--primary {
+    background: map-fetch($config, primary, bg);
+    border: 1px solid map-fetch($config, primary, border);
+    color: map-fetch($config, primary, text);
+
+    &:hover {
+      background: none;
+      border: 1px solid map-fetch($config, primary, hover);
+      color: map-fetch($config, primary, hover);
+    }
+
+    &.btn--outline {
+      background: none;
+      border: 1px solid map-fetch($config, primary, border);
+      color: map-fetch($config, primary, text);
+
+      &:hover {
+        border: 1px solid map-fetch($config, primary, hover);
+        color: map-fetch($config, primary, hover);
+      }
+    }
+  }
+
+  &--secondary {
+    background: map-fetch($config, secondary, bg);
+    border: 1px solid map-fetch($config, secondary, border);
+    color: map-fetch($config, secondary, text);
+
+    &:hover {
+      background: none;
+      border: 1px solid map-fetch($config, secondary, hover);
+      color: map-fetch($config, secondary, hover);
+    }
+
+    &.btn--outline {
+      background: none;
+      border: 1px solid map-fetch($config, secondary, border);
+      color: map-fetch($config, secondary, text);
+
+      &:hover {
+        border: 1px solid map-fetch($config, secondary, hover);
+        color: map-fetch($config, secondary, hover);
+      }
+    }
+  }
+
+  &__group {
+    .btn {
+      &:not(:first-child):not(:last-child) {
+        border-radius: 0;
+        border-right: 0;
+      }
+      &:first-of-type {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+        border-right: 0;
+      }
+      &:last-of-type {
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+      }
+    }
+  }
+
+	&--block {
+		display: block;
+		width: 100%;
+	}
+
+  &.btn--lg {
+    font-size: 16px;
+    min-width: 160px;
+    padding: 12px 22px;
+  }
+
+  &.is-loading {
+    color: transparent !important;
+    display: flex;
+    pointer-events: none;
+		opacity: 0.6;
+  }
+}

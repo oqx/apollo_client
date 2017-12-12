@@ -1,0 +1,30 @@
+.link {
+  color: $brand-primary;
+  cursor: pointer;
+  letter-spacing: 1px;
+  padding: 6px 0;
+  position: relative;
+
+  &::before {
+    content: '';
+    background: $brand-tertiary;
+
+    position: absolute;
+    left: 0;
+    top: 100%;
+
+    transform: translate3d(0,0,0);
+    transition: ease all 0.3s;
+
+    height: 1px;
+    width: 100%;
+
+    z-index: 1;
+  }
+
+  &:hover {
+    &::before {
+     top: calc(100% + #{$spacing-factor});
+    }
+  }
+}

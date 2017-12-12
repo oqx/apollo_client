@@ -1,0 +1,32 @@
+.hero {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: space-between;
+
+  &__header, &__footer {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  &__body {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+    justify-content: center;
+  }
+
+  &__container {
+    position: relative;
+    margin: 0 auto;
+  }
+}
+
+
+
+// Helper classes
+.has-centered-text {
+  text-align: center;
+}

@@ -1,0 +1,82 @@
+.sidebar {
+
+	$config: (
+		accent-dark: lighten($brand-secondary, 30%),
+    accent-light: $brand-tertiary,
+    background: $brand-secondary,
+		desktop-width: 320px,
+		padding: $spacing-factor * 4,
+		tertiary: $brand-tertiary,
+    transition: ease all 0.3s,
+		z-index: map-get($z-index, sidebar),
+  );
+
+	background: linear-gradient(45deg, rgba(255,98,254,0.08) 0%,
+							rgba(54,54,54,0.81) 44%,
+							rgba(54,54,54,1) 67%);
+  background-color: $brand-secondary;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: map-get($global, distance-from-top)
+					 map-get($config, padding)
+					 map-get($config, padding);
+  position: relative;
+
+	opacity: 1;
+	transform: scaleX(1) transform3d(0,0,0);
+	transform-origin: left top;
+  transition: map-get($config, transition);
+	will-change: transform;
+
+	min-height: 100vh;
+	width: 100%;
+
+	z-index: map-get($config, z-index);
+
+  @media(min-width: map-get($breakpoints, sm)) {
+    width: map-get($config, desktop-width);
+  }
+
+  &__filters {
+
+  }
+
+  &--hide {
+    position: absolute;
+		right: 100%;
+    top: 0;
+		transform: scaleX(0) translate3d(0,0,0);
+    transition: map-get($config, transition);
+
+    @media(min-width: map-get($breakpoints, sm)) {
+      margin-left: -320px;
+      position: relative;
+    }
+  }
+
+  &__hide-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    color: $brand-primary;
+    font-size: 12px;
+    cursor: pointer;
+
+    position: absolute;
+    top: map-get($global, distance-from-top);
+    right: 12px;
+
+    transition: ease all 0.3s;
+
+    height: 22px;
+    width: 22px;
+
+    &:hover {
+      animation: pulse infinite 1s;
+    }
+  }
+}

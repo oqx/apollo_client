@@ -1,0 +1,82 @@
+$loader-config: (
+	bg: $brand-secondary,
+	roller: $brand-primary,
+	size: 200px,
+	track: $brand-tertiary,
+	z-index-animate: map-get($z-index, page-loader),
+	z-index-track: map-get($z-index, page-loader-track)
+);
+
+@mixin loader-props() {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%)
+						 translateY(-50%);
+
+	&::before {
+		animation: counter-spin 0.5s infinite linear;
+		background: map-get($loader-config, bg);
+		border-radius: 50%;
+		border: 5px solid map-get($loader-config, track);
+		border-top-color: map-get($loader-config, roller);
+		content: '';
+		height: map-get($loader-config, size);
+		width: map-get($loader-config, size);
+		z-index: map-get($loader-config, z-index-animate);
+	}
+}
+
+.loader {
+
+
+	&:empty {
+		@include loader-props();
+		position: absolute;
+	}
+}
+
+.container-loader {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	@include loader-props();
+
+	&__status {
+		color: darken(map-get($loader-config, track), 15%);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 2px;
+
+		position: absolute;
+		left:50%;
+		top:50%;
+		transform:translateX(-50%) translateY(-50%);
+
+		z-index: map-get($loader-config, z-index-track);
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes counter-spin {
+	0% {
+		transform: rotate(360deg);
+	}
+
+	100% {
+		transform: rotate(0deg);
+	}
+}

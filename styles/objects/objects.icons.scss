@@ -1,0 +1,63 @@
+.icon {
+	&__navigator {
+		color: $brand-tertiary;
+    font-size: 30px;
+		filter: drop-shadow(1px 1px rgba(0,0,0,0.4));
+
+		@include checkFilterSupport() {
+	    filter: drop-shadow(2px 2px red);
+			color: invert($brand-tertiary);
+		}
+	}
+	&__marker {
+		background: $brand-primary;
+		border-radius: 50%;
+		opacity: 0.7;
+
+		transition: ease all 0.3s;
+	  height: 20px;
+		width: 20px;
+
+		@include checkFilterSupport() {
+			background: invert($brand-primary);
+			transition: ease 0.3s all;
+		}
+		&:hover {
+			background: $brand-tertiary;
+			opacity: 1;
+			transform: scale(1.1);
+
+			@include checkFilterSupport() {
+				background: invert($brand-tertiary);
+			}
+		}
+	}
+
+	&__default {
+
+		border: 1px solid $brand-primary;
+		border-radius: 50%;
+		color: $brand-primary;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		margin-right: 12px;
+
+		height: 36px;
+		width: 36px;
+
+		&:only-of-type,
+		&:last-of-type {
+			margin-right: 0;
+		}
+
+	}
+}
+
+@keyframes gradient {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
