@@ -1,144 +1,141 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
-import { divIcon } from 'leaflet'
-import moment from 'moment'
-import { Map as IMap } from 'immutable'
-import { MAP_TILES, MAP_ATTR } from '../CONSTANTS'
-import {  getResultsByCoordinates
-        , getMockResultsByCoordinates } from '../actions/eventsActions'
-import EventDetailsComponent from '../components/eventDetailsComponent'
-import MapMarkerComponent from '../components/mapMarkerComponent'
+import React from "react";
+import { connect } from "react-redux";
+import { Map, TileLayer, Marker, Popup } from "react-leaflet";
+import { divIcon } from "leaflet";
+import moment from "moment";
+import { Map as IMap } from "immutable";
+import { MAP_TILES, MAP_ATTR } from "../CONSTANTS";
+import { getResultsByCoordinates } from "../actions/eventsActions";
+import EventDetailsComponent from "../components/eventDetailsComponent";
+import MapMarkerComponent from "../components/mapMarkerComponent";
 
-class MapContainer extends React.Component {
-	constructor(props) {
-		super(props)
+export class MapContainer extends React.Component {
+  constructor(props) {
+    super(props);
 
-		this.userIcon = divIcon({
-			className: 'ion-android-navigate icon__navigator ',
-		});
-		this.mapMarker = divIcon({
-			className: 'icon__marker'
-		})
+    this.userIcon = divIcon({
+      className: "ion-android-navigate icon__navigator "
+    });
+    this.mapMarker = divIcon({
+      className: "icon__marker"
+    });
 
-		this.state = {
-			data: IMap({
-				event: {
-					distance: 1.5,
-					venue: 'First Ave',
-					coordinates: [],
-					date: Date.now(),
-					artist: []
-				},
-				eventDetailsModalIsVisible: false,
-			})
-		}
-		this.getPopUpStatusAndEvent = this.getPopUpStatusAndEvent.bind(this)
-		this.handleEventDetailsVisibility = this.handleEventDetailsVisibility.bind(this)
-		this.filterEventsByDay = this.filterEventsByDay.bind(this)
-	}
-
-	componentDidMount() {
-		const { dispatch, radius } = this.props
-		dispatch(getResultsByCoordinates(radius))
-    // dispatch(getMockResultsByCoordinates(radius))
-	}
-
-	handleEventDetailsVisibility() {
-		this.setState(({data}) => ({
-			data: data.update('eventDetailsModalIsVisible', v => false)
-		}))
+    this.state = {
+      data: IMap({
+        event: {
+          distance: 1.5,
+          venue: "First Ave",
+          coordinates: [],
+          date: Date.now(),
+          artist: []
+        },
+        eventDetailsModalIsVisible: false
+      })
+    };
+    this.getPopUpStatusAndEvent = this.getPopUpStatusAndEvent.bind(this);
+    this.handleEventDetailsVisibility = this.handleEventDetailsVisibility.bind(
+      this
+    );
+    this.filterEventsByDay = this.filterEventsByDay.bind(this);
   }
 
-	filterEventsByDay(event) {
-		const eod = moment().endOf('day')
-		const endOfDay = moment(eod).format()
-		const eot = moment(eod).add(24, 'hours')
-		const endOfTomorrow = moment(eot).format()
-		const { dateRange } = this.props
+  componentDidMount() {
+    const { dispatch, radius } = this.props;
+    dispatch(getResultsByCoordinates(radius));
+    // dispatch(getMockResultsByCoordinates(radius))
+  }
 
-		if (!!event.date) {
-			if(dateRange === 'Today') {
-				return event.date < endOfDay
-			} else if (dateRange === 'Tomorrow'){
-				return (event.date > endOfDay) && (event.date < endOfTomorrow)
-			} else {
-				return false
-			}
-		}
-	}
+  handleEventDetailsVisibility() {
+    this.setState(({ data }) => ({
+      data: data.update("eventDetailsModalIsVisible", v => false)
+    }));
+  }
 
-	getPopUpStatusAndEvent(event) {
-		const newEvent = event
-		this.setState(({data}) => ({
-			data: data.update('event', e => newEvent)
-		}))
-		this.setState(({data}) => ({
-			data: data.update('eventDetailsModalIsVisible', v => true)
-		}))
-	}
+  filterEventsByDay(event) {
+    const eod = moment().endOf("day");
+    const endOfDay = moment(eod).format();
+    const eot = moment(eod).add(24, "hours");
+    const endOfTomorrow = moment(eot).format();
+    const { dateRange } = this.props;
+
+    if (!!event.date) {
+      if (dateRange === "Today") {
+        return event.date < endOfDay;
+      } else if (dateRange === "Tomorrow") {
+        return event.date > endOfDay && event.date < endOfTomorrow;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  getPopUpStatusAndEvent(event) {
+    const newEvent = event;
+    this.setState(({ data }) => ({
+      data: data.update("event", e => newEvent)
+    }));
+    this.setState(({ data }) => ({
+      data: data.update("eventDetailsModalIsVisible", v => true)
+    }));
+  }
 
   render() {
+    const { appIsLoading, events, userCoordinates, zoom } = this.props;
 
-		const {
-			appIsLoading,
-			events,
-		 	userCoordinates,
-			zoom } = this.props;
+    const data = this.state.data;
 
-			const data = this.state.data
+    return (
+      <div className="structure@map">
+        <div className={"map " + (appIsLoading ? "map__is-loading" : "")}>
+          <Map
+            center={[userCoordinates.get("0"), userCoordinates.get("1")]}
+            zoom={zoom}
+          >
+            <TileLayer attribution={MAP_ATTR} url={MAP_TILES} />
 
-	    return (
-				<div className="structure@map">
-				<div className={"map " + (appIsLoading ? 'map__is-loading' : '')}>
+            <Marker
+              icon={this.userIcon}
+              position={[userCoordinates.get("0"), userCoordinates.get("1")]}
+            >
+              <Popup>
+                <div>This is you!</div>
+              </Popup>
+            </Marker>
 
-				 <Map
-					center={[userCoordinates.get('0'), userCoordinates.get('1')]}
-					zoom={zoom}>
-						<TileLayer
-								attribution={MAP_ATTR}
-								url={MAP_TILES}/>
+            {events.filter(this.filterEventsByDay).map(show => {
+              return (
+                <MapMarkerComponent
+                  icon={this.mapMarker}
+                  event={show}
+                  getPopUpStatusAndEvent={this.getPopUpStatusAndEvent}
+                  key={show.id}
+                />
+              );
+            })}
+          </Map>
+        </div>
 
-						<Marker icon={this.userIcon} position={[userCoordinates.get('0'), userCoordinates.get('1')]}>
-							<Popup>
-								<div>This is you!</div>
-							</Popup>
-						</Marker>
-
-						{events.filter(this.filterEventsByDay).map(show => {
-
-						return (
-              <MapMarkerComponent
-                icon={this.mapMarker}
-                event={show}
-                getPopUpStatusAndEvent={this.getPopUpStatusAndEvent} />
-							)
-						})}
-					</Map>
-				</div>
-
-				{data.get('eventDetailsModalIsVisible') &&
-					<EventDetailsComponent
-						handleVisibility={this.handleEventDetailsVisibility}
-						event={data.get('event')}
-						eventDetailsIsOpen={data.get('eventDetailsModalIsVisible')}
-					/>}
-				</div>
-			)
-		}
-
+        {data.get("eventDetailsModalIsVisible") && (
+          <EventDetailsComponent
+            handleVisibility={this.handleEventDetailsVisibility}
+            event={data.get("event")}
+            eventDetailsIsOpen={data.get("eventDetailsModalIsVisible")}
+          />
+        )}
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
   return {
-    events: state.getIn(['eventsReducer', 'events']),
-		userCoordinates: state.getIn(['eventsReducer', 'userCoordinates']),
-		appIsLoading: state.getIn(['appStatusReducer', 'appIsLoading']),
-		sidebarState: state.getIn(['interactionReducer', 'sidebarState']),
-		zoom: state.getIn(['eventsReducer', 'zoom']),
-		dateRange: state.getIn(['eventsReducer', 'dateRange'])
-
-  }
+    events: state.getIn(["appStatusReducer", "events"]),
+    userCoordinates: state.getIn(["appStatusReducer", "userCoordinates"]),
+    appIsLoading: state.getIn(["appStatusReducer", "appIsLoading"]),
+    sidebarState: state.getIn(["interactionReducer", "sidebarState"]),
+    zoom: state.getIn(["appStatusReducer", "zoom"]),
+    dateRange: state.getIn(["eventsReducer", "dateRange"])
+  };
 }
 
-export default connect(mapStateToProps)(MapContainer)
+export default connect(mapStateToProps)(MapContainer);

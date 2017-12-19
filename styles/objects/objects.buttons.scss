@@ -1,19 +1,20 @@
 .btn {
-
-	$config: (
-		primary: (
-			border: $brand-tertiary,
-			bg: rgba($brand-tertiary, 0.15),
-			hover: darken($brand-tertiary, 25%),
-			text: $brand-tertiary
-		),
-    secondary: (
-      border: $brand-primary,
-      bg: rgba($brand-primary, 0.15),
-      hover: darken($brand-primary, 25%),
-      text: $brand-primary
-    )
-	);
+  $config: (
+    primary:
+      (
+        border: $brand-tertiary,
+        bg: rgba($brand-tertiary, 0.15),
+        hover: darken($brand-tertiary, 25%),
+        text: $brand-tertiary
+      ),
+    secondary:
+      (
+        border: $brand-primary,
+        bg: rgba($brand-primary, 0.15),
+        hover: darken($brand-primary, 25%),
+        text: $brand-primary
+      )
+  );
 
   border-radius: 4px;
   cursor: pointer;
@@ -88,10 +89,10 @@
     }
   }
 
-	&--block {
-		display: block;
-		width: 100%;
-	}
+  &--block {
+    display: block;
+    width: 100%;
+  }
 
   &.btn--lg {
     font-size: 16px;
@@ -101,8 +102,7 @@
 
   &.is-loading {
     color: transparent !important;
-    display: flex;
     pointer-events: none;
-		opacity: 0.6;
+    opacity: 0.6;
   }
 }

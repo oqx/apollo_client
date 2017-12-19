@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<IconBtn /> should render correctly 1`] = `
+<div
+  className="icon__default"
+  onClick={[Function]}
+  role="button"
+>
+  <i
+    className="ion-ios-search"
+  />
+</div>
+`;

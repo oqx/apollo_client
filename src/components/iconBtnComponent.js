@@ -1,19 +1,19 @@
-import React from 'react'
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-const IconBtn = (props) => {
+const IconBtn = props => {
+  const { iconClass, controlFunc } = props;
 
-	const { iconClass, func } = props
-
-	return (<div className="icon__default"role="button" onClick={func}>
-						<i className={iconClass}></i>
-					</div>)
-
-}
+  return (
+    <div className="icon__default" role="button" onClick={controlFunc}>
+      <i className={iconClass} />
+    </div>
+  );
+};
 
 IconBtn.propTypes = {
-	iconClass: PropTypes.string.isRequired,
-	func: PropTypes.func
-}
+  iconClass: PropTypes.string.isRequired,
+  controlFunc: PropTypes.func
+};
 
-export default IconBtn
+export default IconBtn;

@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Nav /> should render correctly 1`] = `
+<nav
+  className="nav"
+>
+  <div
+    className="nav__logo-col"
+  >
+    <Component
+      marginRight="12px"
+    />
+    <Component />
+  </div>
+  <div
+    className="nav__links-col"
+  >
+    <ul
+      className="ul ul--horizontal"
+    >
+      <li
+        className="ul__li"
+      >
+        <Component
+          controlFunc={[Function]}
+          iconClass="ion-ios-search"
+        />
+      </li>
+    </ul>
+  </div>
+</nav>
+`;

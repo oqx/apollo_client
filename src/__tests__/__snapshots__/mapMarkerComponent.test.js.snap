@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<MapMarkerComponent /> should render correctly 1`] = `
+<Marker
+  icon={
+     {
+      "_initHooksCalled": true,
+      "options": Object {
+        "className": "ion-android-navigate icon__navigator ",
+      },
+    }
+  }
+  key="243426"
+  position={
+    Array [
+      44.988767,
+      -93.254362,
+    ]
+  }
+>
+  <Popup
+    pane="popupPane"
+  >
+    <PopUpDispatchComponent
+      event={
+        Object {
+          "artist": Array [
+            Object {
+              "displayName": "RLGDPPL",
+              "id": 23431,
+            },
+            Object {
+              "displayName": "Joelletron",
+              "id": 23432,
+            },
+            Object {
+              "displayName": "Windmill",
+              "id": 23433,
+            },
+          ],
+          "date": null,
+          "distance": 4,
+          "id": 243426,
+          "latlng": Array [
+            44.988767,
+            -93.254362,
+          ],
+          "radius": 10,
+          "type": "Concert",
+        }
+      }
+      getPopUpStatusAndEvent={[Function]}
+    />
+  </Popup>
+</Marker>
+`;
