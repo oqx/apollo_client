@@ -63,7 +63,7 @@ export const DATE_FILTER_OPTIONS = ["Today", "Tomorrow"];
 
 export const GOOGLE_GEO_API_KEY = "AIzaSyD6hU3NZnQZFAfdllY9xfOkd9G9ypgCLRA";
 
-export const GOOGLE_GEOCODE_API_KEY = "AIzaSyDth4GPJr6QqWvkea93_08hdcnsVZTL8LU";
+export const GOOGLE_GEOCODE_API_KEY = "AIzaSyCiACwf5BEo1qXbU1wniJKlz0ZL3U1Lu8w";
 
 export const SONGKICK_API_KEY = "VbQ7KaoC7gTgHb8u";
 

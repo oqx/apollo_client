@@ -1,20 +1,18 @@
-import { Map } from 'immutable'
-
-const initialState = Map({
-	sidebarState: true
-})
+const initialState = {
+  sidebarState: true
+};
 
 function interactionReducer(state = initialState, action) {
+  switch (action.type) {
+    case "TOGGLE_SIDEBAR":
+      return {
+        ...state,
+        sidebarState: action.sidebarState
+      };
 
-	switch(action.type) {
-		case 'TOGGLE_SIDEBAR':
-			return state.merge({
-				sidebarState: action.sidebarState
-			});
-
-		default:
-			return state
-	}
+    default:
+      return state;
+  }
 }
 
-export default interactionReducer
+export default interactionReducer;

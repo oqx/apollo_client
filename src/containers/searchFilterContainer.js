@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Map } from "immutable";
 import Btn from "../components/buttons/buttonComponent";
 import SelectField from "../components/forms/selectField";
 import {
@@ -21,22 +20,17 @@ class SearchFilters extends React.Component {
 
     this.props = props;
     this.state = {
-      data: Map({
-        addressFieldsAreHidden: true,
-        radius: this.props.radius,
-        dateRange: this.props.dateRange,
-        city: "",
-        state: "",
-        zip: ""
-      }),
+      addressFieldsAreHidden: true,
+      radius: this.props.radius,
+      dateRange: this.props.dateRange,
       eventsAreLoading: false
     };
   }
 
   toggleAddressFields() {
-    return this.setState(({ data }) => ({
-      data: data.update("addressFieldsAreHidden", v => !v)
-    }));
+    this.setState({
+      addressFieldsAreHidden: !this.state.addressFieldsAreHidden
+    });
   }
 
   updateSearchRadiusOnMap(e) {
@@ -45,7 +39,8 @@ class SearchFilters extends React.Component {
     dispatch({
       type: "RADIUS_UPDATE_PENDING"
     });
-    dispatch(getResultsByCoordinates(this.state.data.get("radius")));
+
+    dispatch(getResultsByCoordinates(this.state.radius));
     if (!radiusIsUpdating) {
       setTimeout(() => {
         dispatch(setSidebarState(false));
@@ -59,22 +54,22 @@ class SearchFilters extends React.Component {
 
   handleSearchRadiusField(e) {
     const r = parseInt(e.target.value, 10);
-    this.setState(({ data }) => ({
-      data: data.update("radius", v => r)
-    }));
+    this.setState({
+      radius: r
+    });
   }
 
   handleDateRangeField(e) {
     const { dispatch } = this.props;
     const dr = e.target.value;
-    this.setState(({ data }) => ({
-      data: data.update("dateRange", v => dr)
-    }));
+    this.setState({
+      dateRange: dr
+    });
     dispatch(updateDateFilter(dr));
   }
 
   render() {
-    var data = this.state.data;
+    var data = this.state;
     return (
       <form onSubmit={this.handleFormSubmit}>
         <div className="search-filters">
@@ -82,7 +77,7 @@ class SearchFilters extends React.Component {
           <div className="grid">
             <div className="grid__col-auto search-filters__when-col">
               <SelectField
-                value={data.get("dateRange")}
+                value={data.dateRange}
                 label="When"
                 name="date"
                 array={DATE_FILTER_OPTIONS}
@@ -91,7 +86,7 @@ class SearchFilters extends React.Component {
             </div>
             <div className="grid__col-auto">
               <SelectField
-                value={data.get("radius")}
+                value={data.radius}
                 label="Radius"
                 name="radius"
                 array={SEARCH_RADIUS}
@@ -100,7 +95,7 @@ class SearchFilters extends React.Component {
             </div>
           </div>
           <div className="search-filters__btn-wrap">
-            {data.get("addressFieldsAreHidden") && (
+            {data.addressFieldsAreHidden && (
               <Btn
                 look="primary"
                 outline={true}
@@ -118,7 +113,7 @@ class SearchFilters extends React.Component {
             </span>
           </div>
         </div>
-        {!data.get("addressFieldsAreHidden") && <AddressFieldContainer />}
+        {!data.addressFieldsAreHidden && <AddressFieldContainer />}
       </form>
     );
   }
@@ -126,9 +121,9 @@ class SearchFilters extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    radiusIsUpdating: state.getIn(["appStatusReducer", "radiusIsUpdating"]),
-    radius: state.getIn(["appStatusReducer", "radius"]),
-    dateRange: state.getIn(["eventsReducer", "dateRange"])
+    radiusIsUpdating: state.appStatusReducer.radiusIsUpdating,
+    radius: state.appStatusReducer.radius,
+    dateRange: state.eventsReducer.dateRange
   };
 }
 

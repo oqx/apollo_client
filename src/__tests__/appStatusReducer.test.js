@@ -1,105 +1,88 @@
 import React from "react";
-import { Map, List, is } from "immutable";
 import appStatusReducer from "../reducers/appStatusReducer";
 
-const initialState = Map({
+const initialState = {
   appIsLoading: false,
   radiusIsUpdating: false,
   fetchingLocation: false,
   fetchingData: false,
-  userCoordinates: List.of(44.96463, -93.276932),
-  events: List(),
+  userCoordinates: [44.96463, -93.276932],
+  events: [],
   radius: 5,
   zoom: 13
-});
+};
 
-describe("appStatusReducer: default", () => {
-  it("has a default state", () => {
-    expect(
-      is(appStatusReducer(undefined, { type: "unexpected" }), initialState)
-    ).toEqual(true);
+describe("appStatusReducer", () => {
+  it("should return initial state", () => {
+    expect(appStatusReducer(undefined, {})).toMatchObject(initialState);
   });
-});
 
-const REQUEST_LOCATION_PENDING = initialState.merge({
-  appIsLoading: true,
-  fetchingLocation: true
-});
-
-describe("appStatusReducer: REQUEST_LOCATION_PENDING", () => {
-  it("sets fetchingLocation to true and sets appIsLoading to true", () => {
+  it("should handle REQUEST_LOCATION_PENDING", () => {
+    const REQUEST_LOCATION_PENDING = {
+      appIsLoading: true,
+      fetchingLocation: true
+    };
     expect(
-      is(
-        appStatusReducer(undefined, { type: "REQUEST_LOCATION_PENDING" }),
+      appStatusReducer(undefined, {
+        type: "REQUEST_LOCATION_PENDING",
         REQUEST_LOCATION_PENDING
-      )
-    ).toEqual(true);
+      })
+    ).toMatchObject({ ...initialState, ...REQUEST_LOCATION_PENDING });
   });
-});
 
-const REQUEST_EVENTS_PENDING = initialState.merge({
-  fetchingLocation: false,
-  fetchingData: true
-});
-
-describe("appStatusReducer: REQUEST_EVENTS_PENDING", () => {
-  it("sets fetchingLocation to false, sets fetchingData to true", () => {
+  it("should handle REQUEST_EVENTS_PENDING", () => {
+    const REQUEST_EVENTS_PENDING = {
+      fetchingLocation: false,
+      fetchingData: true
+    };
     expect(
-      is(
-        appStatusReducer(undefined, { type: "REQUEST_EVENTS_PENDING" }),
+      appStatusReducer(undefined, {
+        type: "REQUEST_EVENTS_PENDING",
         REQUEST_EVENTS_PENDING
-      )
-    ).toEqual(true);
+      })
+    ).toMatchObject({ ...initialState, ...REQUEST_EVENTS_PENDING });
   });
-});
 
-const RADIUS_UPDATE_PENDING = initialState.merge({
-  radiusIsUpdating: true
-});
-
-describe("appStatusReducer: RADIUS_UPDATE_PENDING", () => {
-  it("sets fetchingLocation to false, sets fetchingData to true", () => {
+  it("should handle RADIUS_UPDATE_PENDING", () => {
+    const RADIUS_UPDATE_PENDING = {
+      radiusIsUpdating: true
+    };
     expect(
-      is(
-        appStatusReducer(undefined, { type: "RADIUS_UPDATE_PENDING" }),
+      appStatusReducer(undefined, {
+        type: "RADIUS_UPDATE_PENDING",
         RADIUS_UPDATE_PENDING
-      )
-    ).toEqual(true);
+      })
+    ).toMatchObject({ ...initialState, ...RADIUS_UPDATE_PENDING });
   });
-});
 
-const NO_EVENT_RESULTS = initialState.merge({
-  fetchingData: false
-});
-
-describe("appStatusReducer: NO_EVENT_RESULTS", () => {
-  it("sets fetchingLocation to false, sets fetchingData to true", () => {
+  it("should handle NO_EVENT_RESULTS", () => {
+    const NO_EVENT_RESULTS = {
+      fetchingData: false
+    };
     expect(
-      is(
-        appStatusReducer(undefined, { type: "NO_EVENT_RESULTS" }),
-        NO_EVENT_RESULTS
-      )
-    ).toEqual(true);
+      appStatusReducer(undefined, { type: "NO_EVENT_RESULTS" }),
+      NO_EVENT_RESULTS
+    ).toMatchObject({ ...initialState, ...NO_EVENT_RESULTS });
   });
-});
 
-const MAP_EVENTS_FULFILLED = initialState.merge({
-  appIsLoading: false,
-  events: List(),
-  fetchingData: false,
-  radius: undefined,
-  radiusIsUpdating: false,
-  userCoordinates: List(),
-  zoom: undefined
-});
-
-describe("appStatusReducer: MAP_EVENTS_FULFILLED", () => {
-  it("sets fetchingLocation to false, sets fetchingData to true", () => {
+  it("should handle MAP_EVENTS_FULFILLED", () => {
+    const MAP_EVENTS_FULFILLED = {
+      events: [],
+      radius: 10,
+      userCoordinates: [25, 25],
+      zoom: 7
+    };
     expect(
-      is(
-        appStatusReducer(undefined, { type: "MAP_EVENTS_FULFILLED" }),
-        MAP_EVENTS_FULFILLED
-      )
-    ).toEqual(true);
+      appStatusReducer(undefined, {
+        type: "MAP_EVENTS_FULFILLED",
+        ...MAP_EVENTS_FULFILLED
+      })
+    ).toMatchObject({
+      ...initialState,
+      ...MAP_EVENTS_FULFILLED,
+      appIsLoading: false,
+      fetchingData: false,
+      radiusIsUpdating: false
+    });
   });
 });

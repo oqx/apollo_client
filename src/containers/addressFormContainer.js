@@ -132,7 +132,7 @@ class AddressFieldContainer extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.getIn(["appStatusReducer", "appIsLoading"])
+    isLoading: state.appStatusReducer.appIsLoading
   };
 }
 

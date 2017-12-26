@@ -12,15 +12,6 @@ const minimalShow = {
   ]
 };
 
-describe("checkIfShowIsValid", () => {
-  it("should return true since show is not null or undefined", () => {
-    expect(es.checkIfShowIsValid(singleShow)).toEqual(true);
-  });
-  it("should return false since value is undefined", () => {
-    expect(es.checkIfShowIsValid(undefined)).toEqual(false);
-  });
-});
-
 describe("filterNearbyEvents", () => {
   const expectedToFilter = {
     radius: 10,
@@ -35,7 +26,7 @@ describe("filterNearbyEvents", () => {
     expect(es.filterNearbyEvents(expectedToFilter)).toEqual(undefined);
   });
   it("do not filter events within radius", () => {
-    expect(es.filterNearbyEvents(expectedToKeep)).toEqual(expectedToKeep);
+    expect(es.filterNearbyEvents(expectedToKeep)).toMatchObject(expectedToKeep);
   });
 });
 

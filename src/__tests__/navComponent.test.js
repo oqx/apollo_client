@@ -1,18 +1,17 @@
 import React from "react";
-import ConnectedNav, { Nav } from "../components/navComponent";
+import ConnectedNav from "../components/navComponent";
 import { shallow, mount } from "enzyme";
 import toJson from "enzyme-to-json";
 import configureStore from "redux-mock-store";
-import { Map } from "immutable";
 
 const mockStore = configureStore();
 let store, container, mountedContainer;
 
-const initialState = Map({
-  interactionReducer: Map({
+const initialState = {
+  interactionReducer: {
     sidebarState: true
-  })
-});
+  }
+};
 
 let state = {
   btnClick: false
@@ -35,7 +34,7 @@ describe("<Nav />", () => {
     expect(container.length).toEqual(1);
   });
 
-  it("should render correctly", () => {
+  it("should match snapshot", () => {
     expect(toJson(container)).toMatchSnapshot();
   });
 });

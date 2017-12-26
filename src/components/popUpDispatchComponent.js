@@ -7,13 +7,11 @@ export default class PopUpDispatchComponent extends React.Component {
   }
 
   componentDidMount() {
-    const { event, getPopUpStatusAndEvent } = this.props;
-    getPopUpStatusAndEvent(event);
-  }
-
-  componentDidUnMount() {
-    const { getPopUpStatusAndEvent } = this.props;
-    getPopUpStatusAndEvent(null);
+    const { event, dispatch } = this.props;
+    dispatch({
+      type: "OPEN_EVENTS_MODAL",
+      event
+    });
   }
 
   render() {

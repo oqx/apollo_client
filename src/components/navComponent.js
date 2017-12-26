@@ -5,18 +5,19 @@ import LogoThumb from "./branding/logoThumbComponent";
 import LogoText from "./branding/logoTextComponent";
 import { setSidebarState } from "../actions/interactionActions";
 
-export class Nav extends React.Component {
+class Nav extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
+    this.dispatch = props.dispatch;
     this.state = {
       sidebarState: props.sidebarState
     };
+    this.toggleSidebar = this._toggleSidebar.bind(this);
   }
 
-  toggleSidebar() {
-    const { dispatch } = this.props;
-    dispatch(setSidebarState(!this.state.sidebarState));
+  _toggleSidebar() {
+    this.dispatch(setSidebarState(!this.state.sidebarState));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -48,7 +49,7 @@ export class Nav extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    sidebarState: state.getIn(["interactionReducer", "sidebarState"])
+    sidebarState: state.interactionReducer.sidebarState
   };
 }
 export default connect(mapStateToProps)(Nav);

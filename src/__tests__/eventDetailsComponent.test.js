@@ -1,6 +1,12 @@
 import React from "react";
-import EventDetailsComponent from "../components/eventDetailsComponent";
+import ConnectedEventDetailsComponent from "../components/eventDetailsComponent";
 import renderer from "react-test-renderer";
+import configureStore from "redux-mock-store";
+import { shallow } from "enzyme";
+import toJson from "enzyme-to-json";
+
+const mockStore = configureStore();
+let store, container;
 
 const event = {
   id: 243426,
@@ -17,21 +23,38 @@ const event = {
   distance: 3
 };
 
+const initialState = {
+  eventsReducer: {
+    eventModalIsOpen: false,
+    event: {
+      venue: null,
+      date: null,
+      distance: null,
+      artist: [
+        {
+          displayName: null,
+          id: null
+        }
+      ],
+      latlng: [null, null],
+      id: null
+    }
+  }
+};
+
 describe("<EventDetailsComponent />", () => {
   function handleEventDetailsVisibility() {
     return true;
   }
 
-  it("should render correctly", () => {
-    const eventModal = renderer
-      .create(
-        <EventDetailsComponent
-          handleVisibility={handleEventDetailsVisibility}
-          event={event}
-          eventDetailsIsOpen={true}
-        />
-      )
-      .toJSON();
-    expect(eventModal).toMatchSnapshot();
+  beforeEach(() => {
+    store = mockStore(initialState);
+    container = shallow(
+      <ConnectedEventDetailsComponent store={store} />
+    ).dive();
+  });
+
+  it("should match snapshot", () => {
+    expect(toJson(container.props().event)).toMatchSnapshot();
   });
 });

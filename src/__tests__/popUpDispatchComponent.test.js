@@ -8,28 +8,15 @@ let store, container, mountedContainer;
 
 const spy = jest.fn();
 
-const state = {
-  btnClick: false
-};
-
-const handleClickStub = () => {
-  state.btnClick = true;
-  spy();
-};
+const handleOnMount = obj => spy();
 
 describe("<PopUpDispatchComponent />", () => {
   beforeEach(() => {
     container = shallow(
-      <PopUpDispatchComponent
-        event={completeShow}
-        getPopUpStatusAndEvent={handleClickStub}
-      />
+      <PopUpDispatchComponent event={completeShow} dispatch={handleOnMount} />
     );
     mountedContainer = mount(
-      <PopUpDispatchComponent
-        event={completeShow}
-        getPopUpStatusAndEvent={handleClickStub}
-      />
+      <PopUpDispatchComponent event={completeShow} dispatch={handleOnMount} />
     );
   });
 
@@ -37,13 +24,12 @@ describe("<PopUpDispatchComponent />", () => {
     expect(container.length).toEqual(1);
   });
 
-  it("should render correctly", () => {
+  it("should match snapshot", () => {
     expect(toJson(container)).toMatchSnapshot();
   });
 
   it("should trigger a function when componentDidMount", () => {
     expect(spy).toHaveBeenCalledTimes(2);
-    expect(state.btnClick).toBe(true);
   });
 
   afterEach(() => {

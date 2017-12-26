@@ -1,22 +1,54 @@
 import React from "react";
+import { connect } from "react-redux";
 import moment from "moment";
 
-export default class EventDetailsComponent extends React.Component {
+class EventDetailsComponent extends React.Component {
   constructor(props) {
     super(props);
     this.props = props;
+    this.state = {
+      eventModalIsOpen: props.eventModalIsOpen,
+      event: {
+        venue: null,
+        date: null,
+        distance: null,
+        artist: [
+          {
+            displayName: null,
+            id: null
+          }
+        ],
+        latlng: [null, null],
+        id: null
+      }
+    };
+    this.handleVisibility = this.handleVisibility.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      eventModalIsOpen: nextProps.eventModalIsOpen,
+      event: nextProps.event
+    });
+  }
+
+  handleVisibility() {
+    document.querySelector(".leaflet-container").click();
+    this.props.dispatch({
+      type: "CLOSE_EVENTS_MODAL"
+    });
   }
 
   render() {
-    const { event, eventDetailsIsOpen, handleVisibility } = this.props;
+    const { event, eventModalIsOpen } = this.state;
 
     return (
       <section
         className={
-          "event-details " + (eventDetailsIsOpen ? "" : "event-details__hidden")
+          "event-details " + (eventModalIsOpen ? "" : "event-details__hidden")
         }
       >
-        <div className="event-details__close" onClick={handleVisibility}>
+        <div className="event-details__close" onClick={this.handleVisibility}>
           <i className="icon ion-android-close" />
         </div>
         <h3 className="hd hd--3 hd--rule">{event.venue}</h3>
@@ -63,3 +95,11 @@ export default class EventDetailsComponent extends React.Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    eventModalIsOpen: state.eventsReducer.eventModalIsOpen,
+    event: state.eventsReducer.event
+  };
+}
+export default connect(mapStateToProps)(EventDetailsComponent);

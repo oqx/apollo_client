@@ -3,6 +3,7 @@ import Nav from "../components/navComponent";
 import MapContainer from "./mapContainer";
 import SidebarContainer from "./sidebarContainer";
 import Footer from "../components/footerComponent";
+import EventDetailsComponent from "../components/eventDetailsComponent";
 
 export default class Layout extends React.Component {
   constructor() {
@@ -30,6 +31,7 @@ export default class Layout extends React.Component {
         <SidebarContainer />
         <MapContainer />
         <Footer />
+        <EventDetailsComponent />
       </div>
     );
   }

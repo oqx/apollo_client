@@ -1,30 +1,27 @@
 import React from "react";
-import { Map, List, is } from "immutable";
 import interactionReducer from "../reducers/interactionReducer";
 
-const initialState = Map({
+const initialState = {
   sidebarState: true
-});
+};
 
-describe("interactionReducer: default", () => {
-  it("has a default state", () => {
+describe("interactionReducer", () => {
+  it("should return initial state", () => {
+    expect(interactionReducer(undefined, {})).toMatchObject(initialState);
+  });
+
+  it("should handle TOGGLE_SIDEBAR", () => {
+    const TOGGLE_SIDEBAR = Object.assign(initialState, {
+      sidebarState: true
+    });
+
     expect(
-      is(interactionReducer(undefined, { type: "unexpected" }), initialState)
-    ).toEqual(true);
+      interactionReducer(undefined, {
+        type: "TOGGLE_SIDEBAR",
+        ...TOGGLE_SIDEBAR
+      })
+    ).toMatchObject(TOGGLE_SIDEBAR);
   });
 });
 
-const TOGGLE_SIDEBAR = initialState.merge({
-  sidebarState: false
-});
-
-describe("interactionReducer: TOGGLE_SIDEBAR", () => {
-  it("toggles sidebar state", () => {
-    expect(
-      is(
-        interactionReducer(undefined, { type: "TOGGLE_SIDEBAR" }),
-        TOGGLE_SIDEBAR
-      )
-    ).toEqual(false);
-  });
-});
+describe("interactionReducer: TOGGLE_SIDEBAR", () => {});

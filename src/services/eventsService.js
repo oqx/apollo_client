@@ -1,55 +1,67 @@
+// @flow
+
 import moment from "moment";
 import { getDistance } from "./geoService";
 
-export const checkIfShowIsValid = show => (!!show ? true : false);
+type Event = {
+  id: number,
+  type: string,
+  date: number,
+  artist: Array<string>,
+  venue: string,
+  radius: number,
+  latlng: Array<number>,
+  distance: number
+};
 
-export const filterNearbyEvents = show => {
-  const isValid = checkIfShowIsValid(show);
-  if (isValid && show.distance <= show.radius) {
-    return Object.assign({}, show);
+export const filterNearbyEvents = (show: Object): mixed => {
+  if (show && show.distance <= show.radius) {
+    return { ...show };
   }
 };
 
-export const addRadiusToEvent = (show, radius) => {
-  return Object.assign({}, show, { radius: radius });
+export const addRadiusToEvent = (show: Object, radius: number): Object => {
+  return { ...show, radius: radius };
 };
 
-export const addUserCoordinatesToEvent = (show, coordinates) => {
-  return Object.assign({}, show, {
+export const addUserCoordinatesToEvent = (
+  show: Object,
+  coordinates: Array<number>
+): Object => {
+  return {
+    ...show,
     user_coordinates: { lat: coordinates[0], lng: coordinates[1] }
-  });
+  };
 };
 
-export const addDistanceToEvent = show => {
-  const d = getDistance(
+export const addDistanceToEvent = (show: Object): Object => {
+  const d: number = getDistance(
     show.user_coordinates.lat,
     show.user_coordinates.lng,
     show.location.lat,
     show.location.lng
   );
-  return Object.assign({}, show, { distance: d });
+  return { ...show, distance: d };
 };
 
-export const removeExpiredEvents = show => {
-  const isValid = checkIfShowIsValid(show);
+export const removeExpiredEvents = (show: Object) => {
   if (
-    isValid &&
+    show &&
     !!show.start.datetime &&
     moment(show.start.datetime).isAfter(Date.now())
   ) {
-    return Object.assign({}, show);
+    return { ...show };
   }
 };
 
-export const removeTimelessEvents = show => {
-  const isValid = checkIfShowIsValid(show);
-  if (isValid && !!show.start.datetime) {
-    return Object.assign({}, show);
+export const removeTimelessEvents = (show: Object) => {
+  if (show && !!show.start.datetime) {
+    return { ...show };
   }
 };
 
-export const mapResultsToArrayOfObjects = show => {
-  return {
+export const mapResultsToArrayOfObjects = (show: Object): Object => {
+  let event: Event = {
     id: show.id,
     type: show.type,
     date: show.start.datetime,
@@ -57,6 +69,7 @@ export const mapResultsToArrayOfObjects = show => {
     venue: show.venue.displayName,
     radius: show.radius,
     latlng: [show.location.lat, show.location.lng],
-    distance: Number.parseFloat(show.distance)
+    distance: show.distance
   };
+  return event;
 };

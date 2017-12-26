@@ -14,9 +14,9 @@ const Footer = props => {
 
 const mapStateToProps = state => {
   return {
-    appIsLoading: state.getIn(["appStatusReducer", "appIsLoading"]),
-    fetchingLocation: state.getIn(["appStatusReducer", "fetchingLocation"]),
-    fetchingData: state.getIn(["appStatusReducer", "fetchingData"])
+    appIsLoading: state.appStatusReducer.appIsLoading,
+    fetchingLocation: state.appStatusReducer.fetchingLocation,
+    fetchingData: state.appStatusReducer.fetchingData
   };
 };
 export default connect(mapStateToProps)(Footer);

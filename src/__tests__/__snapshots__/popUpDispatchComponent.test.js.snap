@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<PopUpDispatchComponent /> should render correctly 1`] = `
+exports[`<PopUpDispatchComponent /> should match snapshot 1`] = `
 <div
   key="243426"
 />

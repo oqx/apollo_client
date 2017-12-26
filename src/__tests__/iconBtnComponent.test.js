@@ -3,23 +3,26 @@ import IconBtn from "../components/iconBtnComponent";
 import { shallow, mount } from "enzyme";
 import toJson from "enzyme-to-json";
 
+let iconBtn,
+  spy = jest.fn();
+
+const state = {
+  btnClick: false
+};
+
+const handleClickStub = () => {
+  state.btnClick = true;
+  spy();
+};
+
 describe("<IconBtn />", () => {
-  let state = {
-    btnClick: false
-  };
-
-  const spy = jest.fn();
-
-  const handleClickStub = () => {
-    state.btnClick = true;
-    spy();
-  };
-
-  const iconBtn = shallow(
-    <IconBtn iconClass="ion-ios-search" controlFunc={handleClickStub}>
-      Submit
-    </IconBtn>
-  );
+  beforeEach(() => {
+    iconBtn = shallow(
+      <IconBtn iconClass="ion-ios-search" controlFunc={handleClickStub}>
+        Submit
+      </IconBtn>
+    );
+  });
 
   it("should render correctly", () => {
     expect(toJson(iconBtn)).toMatchSnapshot();

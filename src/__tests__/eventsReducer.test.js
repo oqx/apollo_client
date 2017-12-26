@@ -1,30 +1,24 @@
 import React from "react";
-import { Map, List, is } from "immutable";
 import eventsReducer from "../reducers/eventsReducer";
 
-const initialState = Map({
+const initialState = {
   dateRange: "Today"
-});
+};
 
-describe("eventsReducer: UPDATE_DATE_FILTER", () => {
-  it("default value for date range", () => {
-    expect(
-      is(eventsReducer(undefined, { type: "unexpected" }), initialState)
-    ).toEqual(true);
+describe("eventsReducer", () => {
+  it("should return initial state", () => {
+    expect(eventsReducer(undefined, {})).toMatchObject(initialState);
   });
-});
 
-const UPDATE_DATE_FILTER = Map({
-  dateRange: undefined
-});
-
-describe("eventsReducer: UPDATE_DATE_FILTER", () => {
-  it("should update date ranger", () => {
+  it("should handle UPDATE_DATE_FILTER", () => {
+    const UPDATE_DATE_FILTER = {
+      dateRange: undefined
+    };
     expect(
-      is(
-        eventsReducer(undefined, { type: "UPDATE_DATE_FILTER" }),
-        UPDATE_DATE_FILTER
-      )
-    ).toEqual(true);
+      eventsReducer(undefined, {
+        type: "UPDATE_DATE_FILTER",
+        ...UPDATE_DATE_FILTER
+      })
+    ).toMatchObject(UPDATE_DATE_FILTER);
   });
 });

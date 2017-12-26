@@ -4,7 +4,8 @@ import { encodeQueryData, compose } from "../services/utilityService";
 import {
   setZoomByRadius,
   extractCoordinates,
-  createGeoCodeResultsStatus
+  createGeoCodeResultsStatus,
+  geoLocator
 } from "../services/geoService";
 import * as requestService from "../services/requestService";
 import * as eventsService from "../services/eventsService";
@@ -27,7 +28,7 @@ const $requestEvents = () => {
   };
 };
 
-const $noEventResults = message => {
+const $noEventResults = (message: string) => {
   return {
     type: "NO_EVENT_RESULTS",
     message
@@ -44,7 +45,7 @@ const $eventsArrayCreated = (events, userCoordinates, radius, zoom) => {
   };
 };
 
-export const updateDateFilter = range => {
+export const updateDateFilter = (range: number) => {
   return {
     type: "UPDATE_DATE_FILTER",
     range
@@ -52,15 +53,19 @@ export const updateDateFilter = range => {
 };
 
 // Bound Action Creators
-const dispatchRequestLocationFailed = () => dispatch =>
+const dispatchRequestLocationFailed = () => (dispatch: any => void) =>
   dispatch($requestLocationFailed());
-const dispatchRequestEvents = () => dispatch => dispatch($requestEvents());
+const dispatchRequestEvents = () => (dispatch: any => void) =>
+  dispatch($requestEvents());
 
-const addCoordinatesAndRadiusToEvent = event => {
+const addCoordinatesAndRadiusToEvent = (event: Object) => {
   return (radius: number) => {
     event = eventsService.addRadiusToEvent(event, radius);
-    return (coordinates: Array<mixed>) => {
-      event = eventsService.addUserCoordinatesToEvent(event, coordinates);
+    return (coordinates: Array<number>) => {
+      event = eventsService.addUserCoordinatesToEvent(
+        event,
+        coordinates
+      );
       return eventsService.addDistanceToEvent(event);
     };
   };
@@ -72,7 +77,11 @@ const filterInvalidEvents = compose(
   eventsService.removeTimelessEvents
 );
 
-export async function fetchEvents(userCoordinates, radius, formPayload) {
+export async function fetchEvents(
+  userCoordinates: Array<number>,
+  radius: number,
+  formPayload?: Object
+) {
   dispatchRequestEvents();
   const events = await requestService.fetchSongKickEvents(
     userCoordinates[0],
@@ -84,11 +93,11 @@ export async function fetchEvents(userCoordinates, radius, formPayload) {
     .map(eventsService.mapResultsToArrayOfObjects);
 }
 
-export function getResultsByCoordinates(radius = 5) {
+export function getResultsByCoordinates(radius: number = 5) {
   const zoom = setZoomByRadius(radius);
-  return dispatch => {
+  return (dispatch: any => void) => {
     dispatch($requestLocation());
-    getLocation().then(userCoordinates => {
+    geoLocator(dispatchRequestLocationFailed).then(userCoordinates => {
       dispatch($requestEvents());
       fetchEvents(userCoordinates, radius).then(events => {
         dispatch($eventsArrayCreated(events, userCoordinates, radius, zoom));
@@ -97,10 +106,10 @@ export function getResultsByCoordinates(radius = 5) {
   };
 }
 
-export function getResultsByAddress(payload, radius = 5) {
+export function getResultsByAddress(payload: Object, radius: number = 5) {
   const zoom = setZoomByRadius(radius);
   const address = encodeQueryData(payload);
-  return dispatch => {
+  return (dispatch: any => void) => {
     dispatch($requestLocation());
     requestService.geoCodeAddress(address).then(results => {
       let geoObj = createGeoCodeResultsStatus(results.data);
@@ -117,64 +126,4 @@ export function getResultsByAddress(payload, radius = 5) {
       }
     });
   };
-}
-
-function getLocation() {
-  return new Promise(resolve => {
-    const addCoordinatesToLocalStorage = latlngArray => {
-      //Add coordinates + timestamp to localstorage
-      var localStorageObj = {
-        location: latlngArray,
-        timestamp: Date.now()
-      };
-      localStorage.setItem("coordinates", JSON.stringify(localStorageObj));
-    };
-
-    const success = pos => {
-      const latlng = [pos.coords.latitude, pos.coords.longitude];
-      addCoordinatesToLocalStorage(latlng);
-      return resolve(latlng);
-    };
-
-    const error = err => {
-      requestService
-        .geoLocateViaGoogleApi()
-        .then(results => {
-          //Add coordinates + timestamp to localstorage
-          const latlng = [results.data.location.lat, results.data.location.lng];
-          addCoordinatesToLocalStorage(latlng);
-          //Resolve promise/user coordinates
-          return resolve(latlng);
-        })
-        .catch(err => {
-          dispatchRequestLocationFailed();
-          throw new Error(err.message);
-        });
-    };
-
-    const options = {
-      timeout: 10000,
-      maximumAge: 5000
-    };
-
-    const fireGeolocator = () => {
-      return navigator.geolocation.getCurrentPosition(success, error, options);
-    };
-
-    //Check localstorage for coordinates
-    const storedCoordinates = localStorage.getItem("coordinates");
-    const stored = JSON.parse(storedCoordinates);
-
-    if (storedCoordinates) {
-      //If timestamp is older than x, get new coordinates
-      if (Date.now() - stored.timestamp > 300000) {
-        fireGeolocator();
-      } else {
-        //else just use the 5min < coords.
-        resolve(stored.location);
-      }
-    } else if (navigator.geolocation) {
-      fireGeolocator();
-    }
-  });
 }
