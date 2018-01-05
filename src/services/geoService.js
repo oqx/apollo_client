@@ -1,7 +1,14 @@
 // @flow
 import * as requestService from "./requestService";
+import { $uiApiErrorAlert } from "../actions/uiActions";
+import { store } from "../index";
 
-export const getDistance = (lat1: number, lon1: number, lat2: number, lon2:number) => {
+export const getDistance = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+) => {
   const p = 0.017453292519943295,
     c = Math.cos;
   let a =
@@ -16,36 +23,19 @@ export const extractCoordinates = (data: Object): Array<number> => {
 };
 
 export const createGeoCodeResultsStatus = (data: Object) => {
-  if (data.status === "OK") {
-    return { has_results: true, data: data.results[0] };
-  } else {
-    if (data.status === "INVALID_REQUEST") {
-      return {
-        has_results: false,
-        message: "No Results. Try another search."
-      };
-    } else if (data.status === "ZERO_RESULTS") {
-      return {
-        has_results: false,
-        message: "No Results. Try another search."
-      };
-    } else if (data.status === "OVER_QUERY_LIMIT") {
-      return {
-        has_results: false,
-        message:
-          "Uh oh, daddy couldn't pay the bill. Please consider donating to keep this project alive."
-      };
-    } else if (data.status === "REQUEST_DENIED") {
-      return {
-        has_results: false,
-        message: "Aww man, you broke it! Please contact me to let me know."
-      };
-    } else {
-      return {
-        has_results: false,
-        message: "Aww man, you broke it! Please contact me to let me know."
-      };
-    }
+  const { dispatch } = store;
+  switch(data.status) {
+    case "OK": return { data: data.results[0] };
+    case "ZERO_RESULTS":
+    case "INVALID_REQUEST":
+      dispatch($uiApiErrorAlert("Address Error", "Address could not be found. Please enter a different address."));
+      break;
+    case "REQUEST_DENIED":
+    case "OVER_QUERY_LIMIT":
+    default:
+      dispatch($uiApiErrorAlert("Geocode Error", "Uh oh, I'm experiencing issues geocoding addresses. Please let me know at support@apolloatlas.com."));
+      break;
+
   }
 };
 
@@ -61,58 +51,56 @@ export const setZoomByRadius = (r: number): number => {
   return 7;
 };
 
-export const geoLocator = (dispatchFailure: any => mixed): Object => {
+export const geoLocator = (): Object => {
   return new Promise((resolve, reject) => {
-
-    const addCoordinatesToLocalStorage = (latlng: Array<number>) => {
-      //Add coordinates + timestamp to localstorage
-      type LocalStorageObj = {
-        location: Array<number>,
-        timestamp: number
-      };
-      
-      var localStorageObj: LocalStorageObj = {
-        location: latlng,
-        timestamp: Date.now()
-      };
-      window.localStorage.setItem("coordinates", JSON.stringify(localStorageObj));
-    };
-
-    const success = (pos: Object) => {
-      const latlng = [pos.coords.latitude, pos.coords.longitude];
-      addCoordinatesToLocalStorage(latlng);
-      return resolve(latlng);
-    };
-
-    const error = (err: Object) => {
-      return requestService
-        .geoLocateViaGoogleApi()
-        .then(results => {
-          //Add coordinates + timestamp to localstorage
-          const latlng = [results.data.location.lat, results.data.location.lng];
-          addCoordinatesToLocalStorage(latlng);
-          //Resolve promise/user coordinates
-          return resolve(latlng);
-        })
-        .catch(err => {
-          return reject(err.message)
-        });
-    };
-
     type Options = {
-        timeout: number,
-        maximumAge: number,
-        enableHighAccuracy: boolean
+      timeout: number,
+      maximumAge: number,
+      enableHighAccuracy: boolean
     };
 
-    const options: Options = {
+    let options: Options = {
       timeout: 10000,
       maximumAge: 5000,
       enableHighAccuracy: true
     };
 
-    const fireGeolocator = () => {
+    let success = (pos: Object) => {
+      const latlng = [pos.coords.latitude, pos.coords.longitude];
+      addCoordinatesToLocalStorage(latlng);
+      resolve(latlng);
+    };
+
+    let error = async (err: Object) => {
+      let results = await requestService.geoLocateViaGoogleApi();
+      if (results) {
+        //Add coordinates + timestamp to localstorage
+        const latlng = [results.data.location.lat, results.data.location.lng];
+        addCoordinatesToLocalStorage(latlng);
+        //Resolve promise/user coordinates
+        resolve(latlng);
+      }
+    };
+
+    let fireGeolocator = () => {
       return navigator.geolocation.getCurrentPosition(success, error, options);
+    };
+
+    let addCoordinatesToLocalStorage = (latlng: Array<number>) => {
+      //Add coordinates + timestamp to localstorage
+      type LocalStorageObj = {
+        location: Array<number>,
+        timestamp: number
+      };
+
+      var localStorageObj: LocalStorageObj = {
+        location: latlng,
+        timestamp: Date.now()
+      };
+      window.localStorage.setItem(
+        "coordinates",
+        JSON.stringify(localStorageObj)
+      );
     };
 
     //Check localstorage for coordinates
@@ -124,7 +112,7 @@ export const geoLocator = (dispatchFailure: any => mixed): Object => {
         fireGeolocator();
       } else {
         //else just use the 5min < coords.
-        return resolve(stored.location);
+        resolve(stored.location);
       }
     } else if (navigator.geolocation) {
       fireGeolocator();

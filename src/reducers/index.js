@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
-import eventsReducer from "./eventsReducer";
-import appStatusReducer from "./appStatusReducer";
-import interactionReducer from "./interactionReducer";
+import data_reducer from "./dataReducer";
+import loading_reducer from "./loadingReducer";
+import ui_reducer from "./uiReducer";
 
 const reducers = combineReducers({
-  eventsReducer,
-  appStatusReducer,
-  interactionReducer
+  data_reducer,
+  loading_reducer,
+  ui_reducer
 });
 
 export default reducers;

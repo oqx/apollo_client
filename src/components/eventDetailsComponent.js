@@ -7,7 +7,7 @@ class EventDetailsComponent extends React.Component {
     super(props);
     this.props = props;
     this.state = {
-      eventModalIsOpen: props.eventModalIsOpen,
+      event_modal_is_open: props.event_modal_is_open,
       event: {
         venue: null,
         date: null,
@@ -27,7 +27,7 @@ class EventDetailsComponent extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      eventModalIsOpen: nextProps.eventModalIsOpen,
+      event_modal_is_open: nextProps.event_modal_is_open,
       event: nextProps.event
     });
   }
@@ -35,17 +35,17 @@ class EventDetailsComponent extends React.Component {
   handleVisibility() {
     document.querySelector(".leaflet-container").click();
     this.props.dispatch({
-      type: "CLOSE_EVENTS_MODAL"
+      type: "CLOSE_EVENT_MODAL"
     });
   }
 
   render() {
-    const { event, eventModalIsOpen } = this.state;
+    const { event, event_modal_is_open } = this.state;
 
     return (
       <section
         className={
-          "event-details " + (eventModalIsOpen ? "" : "event-details__hidden")
+          "event-details " + (event_modal_is_open ? "" : "event-details__hidden")
         }
       >
         <div className="event-details__close" onClick={this.handleVisibility}>
@@ -98,8 +98,9 @@ class EventDetailsComponent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    eventModalIsOpen: state.eventsReducer.eventModalIsOpen,
-    event: state.eventsReducer.event
+    event_modal_is_open: state.ui_reducer.event_modal_is_open,
+    event: state.data_reducer.event
   };
 }
+
 export default connect(mapStateToProps)(EventDetailsComponent);

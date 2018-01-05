@@ -24,8 +24,10 @@ const event = {
 };
 
 const initialState = {
-  eventsReducer: {
-    eventModalIsOpen: false,
+  ui_reducer: {
+    event_modal_is_open: false
+  },
+  data_reducer: {
     event: {
       venue: null,
       date: null,

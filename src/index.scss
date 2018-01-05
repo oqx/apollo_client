@@ -1,7 +1,7 @@
 // Settings
-@import "../styles/_settings/settings.breakpoints";
-@import "../styles/_settings/settings.colors";
-@import "../styles/_settings/settings.vars-etc";
+@import "../styles/settings/settings.breakpoints";
+@import "../styles/settings/settings.colors";
+@import "../styles/settings/settings.vars-etc";
 
 // Tools
 @import "../styles/tools/tools.functions";
@@ -23,6 +23,7 @@
 @import "../styles/components/components.map";
 @import "../styles/components/components.event-details-flyout";
 @import "../styles/components/components.hero";
+@import "../styles/components/components.alert";
 
 // Objects
 @import "../styles/objects/objects.loader";

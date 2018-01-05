@@ -2,7 +2,7 @@
 
 exports[`<IconBtn /> should render correctly 1`] = `
 <div
-  className="icon__default"
+  className="icon icon__default"
   onClick={[Function]}
   role="button"
 >

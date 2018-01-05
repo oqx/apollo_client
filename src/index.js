@@ -6,7 +6,7 @@ import LayoutContainer from "./containers/layoutContainer";
 import { Provider } from "react-redux";
 import configureStore from "./store";
 
-const store = configureStore();
+export const store = configureStore();
 
 const $app = document.getElementById("app");
 

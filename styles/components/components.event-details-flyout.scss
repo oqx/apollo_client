@@ -2,18 +2,20 @@
   background: rgba(46, 61, 74, 0.9);
   border: 1px solid $brand-primary;
   color: $brand-primary;
+  display: block;
   font-weight: 200;
   font-size: 14px;
-  display: block;
+  overflow: auto;
   padding: 24px;
   position: absolute;
-	transform: translate3d(0,0,0);
-  transition: ease all 0.3s;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+
+  transition: ease all 0.3s;
   transform: translate3d(0,0,0);
+  will-change: opacity;
 	z-index: map-get($z-index, event-details);
 
   @media(min-width: map-get($breakpoints, sm)) {
@@ -27,7 +29,6 @@
 	&__hidden {
 		position: absolute;
 		opacity: 0;
-		transform: translateY(-2000px);
 		visibility: hidden;
 	}
 

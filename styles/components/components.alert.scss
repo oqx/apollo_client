@@ -1,0 +1,78 @@
+.alert {
+  background: rgba(0, 0, 0, 0.6);
+
+  opacity: 0;
+  visibility: hidden;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  z-index: map-get($z-index, alert-overlay);
+
+  @mixin alert-type-styles($color) {
+    .alert\@container {
+      background: lighten($color, 60%);
+      border: 1px solid $color;
+      color: $color;
+    }
+  }
+
+  &--error {
+    @include alert-type-styles(#6b0808);
+  }
+
+  &\@container {
+    background: white;
+
+    display: flex;
+
+    padding: 18px;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+
+    max-height: 600px;
+    width: 90%;
+
+    z-index: map-get($z-index, alert-container);
+
+    @media(min-width: map-get($breakpoints, sm)) {
+      width: 480px;
+    }
+  }
+
+  &\@icon {
+    flex: 0 1;
+    margin: 0 24px 0 12px;
+    align-self: center;
+    font-size: 48px;
+  }
+
+  &\@info {
+    flex: 1;
+
+    &__title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      margin-top: 0;
+      text-transform: uppercase;
+    }
+
+    &__message {
+      font-size: 14px;
+      letter-spacing: 1.2px;
+      line-height: 1.5;
+    }
+  }
+
+  &.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}

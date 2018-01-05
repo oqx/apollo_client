@@ -1,4 +1,5 @@
 import React from "react";
+import { DISPATCH_NEW_EVENT_MODAL } from "../actionTypes";
 
 export default class PopUpDispatchComponent extends React.Component {
   constructor(props) {
@@ -9,7 +10,7 @@ export default class PopUpDispatchComponent extends React.Component {
   componentDidMount() {
     const { event, dispatch } = this.props;
     dispatch({
-      type: "OPEN_EVENTS_MODAL",
+      type: DISPATCH_NEW_EVENT_MODAL,
       event
     });
   }

@@ -4,8 +4,7 @@ import Btn from "../components/buttons/buttonComponent";
 import FormField from "../components/forms/formFields";
 import { Map } from "immutable";
 import { US_STATES } from "../CONSTANTS";
-import { getResultsByAddress } from "../actions/eventsActions";
-import { setSidebarState } from "../actions/interactionActions";
+import { getResultsByAddress } from "../actions/dataActions";
 
 class AddressFieldContainer extends React.Component {
   constructor(props) {
@@ -17,15 +16,30 @@ class AddressFieldContainer extends React.Component {
     this.handleStateField = this.handleStateField.bind(this);
     this.handleZipField = this.handleZipField.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.addBounceEffect = this._addBounceEffect.bind(this);
 
     this.state = {
       data: Map({
         radius: this.props.radius,
         city: "",
         state: "",
-        zip: ""
+        zip: "",
+        is_visible: false,
+        animateClass: ''
       })
     };
+  }
+
+  componentDidMount() {
+    this.setState({ animateClass: 'zoom-in animate' });
+  }
+
+  componentWillUnmount() {
+    this.addBounceEffect();
+  }
+
+  _addBounceEffect() {
+    this.setState({ animateClass: 'bounce-in animate' });
   }
 
   handleAddressField(e) {
@@ -58,7 +72,6 @@ class AddressFieldContainer extends React.Component {
 
   handleFormSubmit(e) {
     e.preventDefault();
-    const { dispatch } = this.props;
     const formPayload = {
       city: this.state.data.get("city"),
       state: this.state.data.get("state"),
@@ -66,15 +79,12 @@ class AddressFieldContainer extends React.Component {
       zip: this.state.data.get("zip")
     };
     const r = this.state.data.get("radius");
-    dispatch(getResultsByAddress(formPayload, r));
-    return setTimeout(() => {
-      dispatch(setSidebarState(false));
-    }, 1500);
+    getResultsByAddress(formPayload, r);
   }
 
   render() {
     return (
-      <div className="search-filters__address-box" role="group">
+      <div className={`search-filters__address-box ${this.state.animateClass}`} role="group">
         <FormField
           type={"text"}
           clasNames={"form@field__group"}
@@ -132,7 +142,7 @@ class AddressFieldContainer extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.appStatusReducer.appIsLoading
+    isLoading: state.loading_reducer.app_is_loading
   };
 }
 

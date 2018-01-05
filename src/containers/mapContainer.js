@@ -1,77 +1,86 @@
 import React from "react";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import { divIcon } from "leaflet";
-import moment from "moment";
 import { MAP_TILES, MAP_ATTR } from "../CONSTANTS";
-import { getResultsByCoordinates } from "../actions/eventsActions";
+import * as eventsService from "../services/eventsService";
+import { getResultsByCoordinates } from "../actions/dataActions";
 import MapMarkerComponent from "../components/mapMarkerComponent";
+import AlertContainer from "./alertContainer";
 
-export class MapContainer extends React.Component {
+class MapContainer extends React.Component {
   constructor(props) {
     super(props);
+    this.setEventsState = this._setEventsState.bind(this);
 
     this.userIcon = divIcon({
       className: "ion-android-navigate icon__navigator "
     });
+
     this.mapMarker = divIcon({
       className: "icon__marker"
     });
-    this.filterEventsByDay = this.filterEventsByDay.bind(this);
+
+    this.state = {
+      events: props.events
+    };
+
+    getResultsByCoordinates(props.radius);
   }
 
-  componentDidMount() {
-    const { dispatch, radius } = this.props;
-    dispatch(getResultsByCoordinates(radius));
-    // dispatch(getMockResultsByCoordinates(radius))
-  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.events !== this.state.events) {
+      this.setEventsState(nextProps.events, nextProps.date_range, true);
+    }
 
-  filterEventsByDay(event) {
-    const eod = moment().endOf("day"),
-      endOfDay = moment(eod).format(),
-      eot = moment(eod).add(24, "hours"),
-      endOfTomorrow = moment(eot).format(),
-      { dateRange } = this.props;
-
-    if (!!event.date) {
-      if (dateRange === "Today") {
-        return event.date < endOfDay;
-      } else if (dateRange === "Tomorrow") {
-        return event.date > endOfDay && event.date < endOfTomorrow;
-      } else {
-        return false;
-      }
+    if (
+      nextProps.date_range !== this.props.date_range &&
+      nextProps.events === this.state.events
+    ) {
+      this.setEventsState(nextProps.events, nextProps.date_range, false);
     }
   }
 
+  _setEventsState(events, dateRange, updateMainEventObject = false) {
+    let eventState = {
+      filteredEvents: eventsService.handleNoEvents(events)
+    };
+    if (updateMainEventObject) eventState["events"] = events;
+    this.setState({ ...eventState });
+  }
+
   render() {
-    const { appIsLoading, events, userCoordinates, zoom } = this.props;
+    const { app_is_loading, user_coordinates, zoom } = this.props,
+      { filteredEvents } = this.state;
 
     return (
       <div className="structure@map">
-        <div className={"map " + (appIsLoading ? "map__is-loading" : "")}>
-          <Map center={[userCoordinates[0], userCoordinates[1]]} zoom={zoom}>
+        <AlertContainer />
+        <div className={"map " + (app_is_loading ? "map__is-loading" : "")}>
+          <Map center={[user_coordinates[0], user_coordinates[1]]} zoom={zoom}>
             <TileLayer attribution={MAP_ATTR} url={MAP_TILES} />
 
             <Marker
               icon={this.userIcon}
-              position={[userCoordinates[0], userCoordinates[1]]}
+              position={[user_coordinates[0], user_coordinates[1]]}
             >
               <Popup>
                 <div>This is you!</div>
               </Popup>
             </Marker>
 
-            {events.filter(this.filterEventsByDay).map(show => {
-              return (
-                <MapMarkerComponent
-                  icon={this.mapMarker}
-                  event={show}
-                  key={show.id}
-                  dispatch={this.props.dispatch}
-                />
-              );
-            })}
+            {filteredEvents &&
+              filteredEvents.map(show => {
+                return (
+                  <MapMarkerComponent
+                    icon={this.mapMarker}
+                    event={show}
+                    key={show.id}
+                    dispatch={this.props.dispatch}
+                  />
+                );
+              })}
           </Map>
         </div>
       </div>
@@ -81,13 +90,22 @@ export class MapContainer extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    appIsLoading: state.appStatusReducer.appIsLoading,
-    events: state.appStatusReducer.events,
-    userCoordinates: state.appStatusReducer.userCoordinates,
-    sidebarState: state.interactionReducer.sidebarState,
-    zoom: state.appStatusReducer.zoom,
-    dateRange: state.eventsReducer.dateRange
+    app_is_loading: state.loading_reducer.app_is_loading,
+    date_range: state.data_reducer.date_range,
+    events: state.data_reducer.events,
+    sidebar_state: state.ui_reducer.sidebar_state,
+    user_coordinates: state.data_reducer.user_coordinates,
+    zoom: state.data_reducer.zoom
   };
 }
+
+MapContainer.propTypes = {
+  app_is_loading: PropTypes.bool,
+  date_range: PropTypes.string,
+  events: PropTypes.array,
+  sidebar_state: PropTypes.bool,
+  user_coordinates: PropTypes.array,
+  zoom: PropTypes.number
+};
 
 export default connect(mapStateToProps)(MapContainer);

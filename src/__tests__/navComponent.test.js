@@ -8,8 +8,8 @@ const mockStore = configureStore();
 let store, container, mountedContainer;
 
 const initialState = {
-  interactionReducer: {
-    sidebarState: true
+  ui_reducer: {
+    sidebar_state: true
   }
 };
 

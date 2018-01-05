@@ -5,7 +5,7 @@ const IconBtn = props => {
   const { iconClass, controlFunc } = props;
 
   return (
-    <div className="icon__default" role="button" onClick={controlFunc}>
+    <div className="icon icon__default" role="button" onClick={controlFunc}>
       <i className={iconClass} />
     </div>
   );

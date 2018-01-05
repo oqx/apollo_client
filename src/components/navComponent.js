@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import IconBtn from "./iconBtnComponent";
 import LogoThumb from "./branding/logoThumbComponent";
 import LogoText from "./branding/logoTextComponent";
-import { setSidebarState } from "../actions/interactionActions";
+import { $uiSetSidebarState } from "../actions/uiActions";
 
 class Nav extends React.Component {
   constructor(props) {
@@ -11,26 +11,33 @@ class Nav extends React.Component {
     this.props = props;
     this.dispatch = props.dispatch;
     this.state = {
-      sidebarState: props.sidebarState
+      sidebarState: props.sidebar_state,
+      fadeInLogo: false
     };
     this.toggleSidebar = this._toggleSidebar.bind(this);
   }
 
   _toggleSidebar() {
-    this.dispatch(setSidebarState(!this.state.sidebarState));
+    this.dispatch($uiSetSidebarState(!this.state.sidebarState));
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ fadeInLogo: true })
+    }, 1000)
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ sidebarState: nextProps.sidebarState });
+    this.setState({ sidebarState: nextProps.sidebar_state });
   }
 
   render() {
     return (
       <nav className="nav">
-        <div className="nav__logo-col">
+        {this.state.fadeInLogo && <div className={this.state.fadeInLogo ? "nav__logo-col bounce-in animate" : "nav__logo-col"}>
           <LogoThumb marginRight="12px" />
           <LogoText />
-        </div>
+        </div>}
 
         <div className="nav__links-col">
           <ul className="ul ul--horizontal">
@@ -49,7 +56,7 @@ class Nav extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    sidebarState: state.interactionReducer.sidebarState
+    sidebar_state: state.ui_reducer.sidebar_state
   };
 }
 export default connect(mapStateToProps)(Nav);

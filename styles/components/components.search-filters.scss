@@ -1,5 +1,8 @@
 .search-filters {
   position: relative;
+  transform: translate3d(0, 0, 0);
+  transition: ease transform 0.4s;
+  will-change: transform;
 
 	&__btn-wrap {
 		max-height: 32px;

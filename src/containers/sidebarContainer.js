@@ -1,25 +1,36 @@
 import React from "react";
 import { connect } from "react-redux";
 import SearchFilters from "./searchFilterContainer";
-import { setSidebarState } from "../actions/interactionActions";
+import { $uiSetSidebarState } from "../actions/uiActions";
 
 class SidebarContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.toggleSidebar = this.toggleSidebar.bind(this);
+    this.toggleSidebar = this._toggleSidebar.bind(this);
+    this.closeOnMountOnMobile = this._closeOnMountOnMobile.bind(this);
   }
 
-  toggleSidebar() {
-    const { dispatch, sidebarState } = this.props;
-    dispatch(setSidebarState(!sidebarState));
+  componentWillMount() {
+    this.closeOnMountOnMobile();
+  }
+
+  _closeOnMountOnMobile() {
+    if (window.innerWidth < 768) {
+      this.toggleSidebar();
+    }
+  }
+
+  _toggleSidebar() {
+    const { dispatch, sidebar_state } = this.props;
+    dispatch($uiSetSidebarState(!sidebar_state));
   }
 
   render() {
-    const { sidebarState } = this.props;
+    const { sidebar_state } = this.props;
     return (
       <section
         key={"sidebar_component"}
-        className={"sidebar " + (sidebarState ? "" : "sidebar--hide")}
+        className={"sidebar " + (sidebar_state ? "" : "sidebar--hide")}
       >
         <div
           role="button"
@@ -37,7 +48,7 @@ class SidebarContainer extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    sidebarState: state.interactionReducer.sidebarState
+    sidebar_state: state.ui_reducer.sidebar_state
   };
 }
 

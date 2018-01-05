@@ -1,0 +1,15 @@
+$spacing-factor: 6px;
+
+$z-index: (
+  alert-container: 6,
+  alert-overlay: 5,
+  event-details: 404,
+  footer: 403,
+  header: 403,
+  open-sidebar-btn: 401,
+  page-loader: 20000,
+  page-loader-track: 20001,
+  sidebar: 402
+);
+
+$global: (distance-from-top: 72px);

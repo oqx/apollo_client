@@ -1,6 +1,8 @@
-export const apply = (val: mixed, fn) => fn(val);
-export const compose = (...arr) => (val: mixed) =>
-  arr.reverse().reduce(apply, val);
+export const compose = (...fns) =>
+  fns.reduce((f, g) => (...args) => f(g(...args)));
+  
+export const pipe = (fn, ...fns) => (...args) =>
+  fns.reduce((acc, fn) => fn(acc), fn(...args));
 
 export function encodeQueryData(data) {
   let arr = [];

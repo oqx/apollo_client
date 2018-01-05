@@ -1,5 +1,7 @@
 import * as es from "../services/eventsService";
 import { singleShow, partiallyMappedShow } from "../mockResults";
+import dataReducer from "../reducers/dataReducer";
+import { DISPATCH_USER_COORDINATES } from "../actionTypes";
 
 const minimalShow = {
   id: 243426,
@@ -68,8 +70,13 @@ describe("addUserCoordinatesToEvent", () => {
   };
 
   it("should return new object with user coordinate key/val pair", () => {
+    dataReducer(undefined, {
+      type: DISPATCH_USER_COORDINATES,
+      user_coordinates: coordinates
+    });
+
     expect(
-      es.addUserCoordinatesToEvent(minimalShow, coordinates)
+      es.addUserCoordinatesToEvent(minimalShow)
     ).toMatchObject(eventWithUserCoords);
   });
 });

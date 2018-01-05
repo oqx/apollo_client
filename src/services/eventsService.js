@@ -1,7 +1,8 @@
 // @flow
-
 import moment from "moment";
 import { getDistance } from "./geoService";
+import { $uiNoEventsAlert } from "../actions/uiActions";
+import { store } from "../index";
 
 type Event = {
   id: number,
@@ -20,17 +21,17 @@ export const filterNearbyEvents = (show: Object): mixed => {
   }
 };
 
-export const addRadiusToEvent = (show: Object, radius: number): Object => {
-  return { ...show, radius: radius };
+export const addRadiusToEvent = (show: Object): Object => {
+  return { ...show, radius: store.getState().data_reducer.radius };
 };
 
-export const addUserCoordinatesToEvent = (
-  show: Object,
-  coordinates: Array<number>
-): Object => {
+export const addUserCoordinatesToEvent = (show: Object): Object => {
   return {
     ...show,
-    user_coordinates: { lat: coordinates[0], lng: coordinates[1] }
+    user_coordinates: {
+      lat: store.getState().data_reducer.user_coordinates[0],
+      lng: store.getState().data_reducer.user_coordinates[1]
+    }
   };
 };
 
@@ -72,4 +73,36 @@ export const mapResultsToArrayOfObjects = (show: Object): Object => {
     distance: show.distance
   };
   return event;
+};
+
+export const handleNoEvents = (events: Array<any>) => {
+  const currentShows = _filterShowsBySelectedDate(events);
+  if (currentShows.length === 0) {
+    store.dispatch($uiNoEventsAlert());
+    return null;
+  }
+  return [].concat(currentShows);
+};
+
+const _filterShowsBySelectedDate = shows => {
+  if (shows.length === 0) {
+    return [];
+  }
+
+  const endOfDay = moment()
+      .endOf("day")
+      .format(),
+    endOfTomorrow = moment(endOfDay)
+      .add(24, "hours")
+      .format(),
+    dateRange = store.getState().data_reducer.date_range;
+
+  return shows
+    .filter(show => {
+      if (dateRange === "Today") {
+        return show.date < endOfDay;
+      } else {
+        return show.date > endOfDay && show.date < endOfTomorrow;
+      }
+    })
 };
