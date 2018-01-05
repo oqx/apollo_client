@@ -4,7 +4,7 @@ import { GOOGLE_GEO_API_KEY } from "../CONSTANTS";
 import { GOOGLE_GEOCODE_API_KEY } from "../CONSTANTS";
 import { SONGKICK_API_KEY } from "../CONSTANTS";
 import { $requestEvents } from "../actions/loadingActions";
-import { $uiApiErrorAlert } from "../actions/uiActions";
+import { $uiApiErrorAlert, $uiNoEventsAlert } from "../actions/uiActions";
 import { store } from "../index";
 
 export async function fetchSongKickEvents(lat: number, lng: number): Object {
@@ -15,6 +15,10 @@ export async function fetchSongKickEvents(lat: number, lng: number): Object {
       `https://api.songkick.com/api/3.0/events.json?apikey=${SONGKICK_API_KEY}&location=geo:${lat},${lng}`
     )
     .then(response => {
+      if (response.data.resultsPage.totalEntries === 0) {
+        dispatch($uiNoEventsAlert());
+        throw new Error("No Results");
+      }
       return response.data.resultsPage.results.event;
     })
     .catch(err => {

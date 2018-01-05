@@ -28,13 +28,21 @@ class SidebarContainer extends React.Component {
   render() {
     const { sidebar_state } = this.props;
     return (
-      <section
-        key={"sidebar_component"}
-        className={"sidebar " + (sidebar_state ? "" : "sidebar--hide")}
-      >
+      <section className={"sidebar " + (sidebar_state ? "" : "sidebar--hide")}>
+        <div
+          className={
+            !sidebar_state
+              ? "sidebar@toggle-btn"
+              : "sidebar@toggle-btn sidebar@toggle-btn--hide"
+          }
+          role="button"
+          onClick={this.toggleSidebar}
+        >
+          <i className="ion ion-arrow-right-b sidebar@toggle-btn__icon" />
+        </div>
         <div
           role="button"
-          className="sidebar__hide-btn"
+          className="sidebar@hide-btn"
           onClick={this.toggleSidebar}
         >
           <i className="ion ion-close-round" />

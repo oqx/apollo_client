@@ -43,8 +43,11 @@ class SearchFilters extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if(nextProps.sidebar_state !== this.props.sidebar_state) {
+      this.addBounceEffectOnSidebarToggle(nextProps);
+      return;
+    }
     nextProps.dispatch($uiCloseAlert());
-    this.addBounceEffectOnSidebarToggle(nextProps);
   }
 
   componentDidMount() {

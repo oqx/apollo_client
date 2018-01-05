@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { $uiSetSidebarState } from "../actions/uiActions";
 
 class AlertContainer extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class AlertContainer extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    nextProps.dispatch($uiSetSidebarState());
     this.setState({
       title: nextProps.title,
       message: nextProps.message,

@@ -13,16 +13,15 @@ class Footer extends React.Component {
   }
 
   _setStatus(_props) {
-    console.log(_props)
-    if (_props.fetching_location) {
+    if (_props.fetching_location !== this.props.fetching_location) {
       this.setState({ status: "Fetching Location..." });
     }
-    if (_props.fetching_data) {
+    if (_props.fetching_data !== this.props.fetching_data) {
       this.setState({ status: "Retrieving Data..." });
     }
-    if (_props.alert_is_visible) {
+    if (_props.alert_is_visible !== this.props.alert_is_visible) {
       this.setState({ status: _props.alert_title });
-    } else {
+    } else if(!_props.app_is_loading) {
       this.setState({
         status: "Completed."
       });
