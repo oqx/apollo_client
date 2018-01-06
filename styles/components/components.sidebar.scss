@@ -80,9 +80,10 @@
 
     &:hover,
     &:active {
-      background: lighten($brand-secondary, 25%);
+      animation: none;
+      border: 1px solid darken($brand-tertiary, 15%);
       .sidebar\@toggle-btn__icon {
-        color: darken($brand-primary, 60%);
+        color: darken($brand-tertiary, 15%);
       }
     }
 

@@ -13,17 +13,19 @@ export default class Btn extends React.Component {
     };
 
     this.state = {
-      isLoading: false
+      isLoading: false,
+      isDisabled: false || props.isDisabled
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.isDisabled !== this.props.isDisabled) {
+      this.setState({ isDisabled: nextProps.isDisabled });
+    }
     if (nextProps.isLoading === true) {
       this.setState({ isLoading: true });
     } else {
-      setTimeout(() => {
-        this.setState({ isLoading: false });
-      }, 2000);
+      this.setState({ isLoading: false });
     }
   }
 
@@ -32,6 +34,7 @@ export default class Btn extends React.Component {
       <button
         type={this.props.type}
         onClick={this.props.controlFunc}
+        disabled={this.state.isDisabled}
         className={
           "btn " +
           this.btnMap[this.props.look] +
@@ -54,5 +57,6 @@ Btn.propTypes = {
   look: PropTypes.string.isRequired,
   outline: PropTypes.bool,
   children: PropTypes.string.isRequired,
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
+  isDisabled: PropTypes.bool
 };

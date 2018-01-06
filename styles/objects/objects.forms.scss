@@ -112,5 +112,9 @@
         }
       }
     }
+
+    &--error {
+      border-color: $brand-error;
+    }
   }
 }

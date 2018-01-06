@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import Btn from "../components/buttons/buttonComponent";
 import FormField from "../components/forms/formFields";
-import { Map } from "immutable";
 import { US_STATES } from "../CONSTANTS";
 import { getResultsByAddress } from "../actions/dataActions";
 
@@ -11,27 +10,32 @@ class AddressFieldContainer extends React.Component {
     super(props);
     this.props = props;
 
-    this.handleAddressField = this.handleAddressField.bind(this);
-    this.handleCityField = this.handleCityField.bind(this);
-    this.handleStateField = this.handleStateField.bind(this);
-    this.handleZipField = this.handleZipField.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleAddressField = this._handleAddressField.bind(this);
+    this.handleCityField = this._handleCityField.bind(this);
+    this.handleStateField = this._handleStateField.bind(this);
+    this.handleZipField = this._handleZipField.bind(this);
+    this.handleFormSubmit = this._handleFormSubmit.bind(this);
     this.addBounceEffect = this._addBounceEffect.bind(this);
+    this.validateFields = this._validateFields.bind(this);
+    this.canBeSubmitted = this._canBeSubmitted.bind(this);
+    this.updateOnBlur = this._updateOnBlur.bind(this);
 
     this.state = {
-      data: Map({
-        radius: this.props.radius,
-        city: "",
-        state: "",
-        zip: "",
-        is_visible: false,
-        animateClass: ''
-      })
+      radius: this.props.radius,
+      city: "",
+      state: "",
+      zip: "",
+      is_visible: false,
+      animateClass: "",
+      errors: {
+        city: false
+      },
+      btnIsEnabled: true
     };
   }
 
   componentDidMount() {
-    this.setState({ animateClass: 'zoom-in animate' });
+    this.setState({ animateClass: "zoom-in animate" });
   }
 
   componentWillUnmount() {
@@ -39,58 +43,81 @@ class AddressFieldContainer extends React.Component {
   }
 
   _addBounceEffect() {
-    this.setState({ animateClass: 'bounce-in animate' });
+    this.setState({ animateClass: "bounce-in animate" });
   }
 
-  handleAddressField(e) {
-    const a = e.target.value;
-    this.setState(({ data }) => ({
-      data: data.update("address", v => a)
-    }));
+  _handleAddressField(e) {
+    this.setState({ address: e.target.value });
   }
 
-  handleCityField(e) {
-    const c = e.target.value;
-    this.setState(({ data }) => ({
-      data: data.update("city", v => c)
-    }));
+  _handleCityField(e) {
+    this.updateOnBlur(e);
+    this.setState({ city: e.target.value });
   }
 
-  handleStateField(e) {
-    const s = e.target.value;
-    this.setState(({ data }) => ({
-      data: data.update("state", v => s)
-    }));
+  _handleStateField(e) {
+    this.setState({ state: e.target.value });
   }
 
-  handleZipField(e) {
-    const z = e.target.value;
-    this.setState(({ data }) => ({
-      data: data.update("zip", v => z)
-    }));
+  _handleZipField(e) {
+    this.setState({ zip: e.target.value });
   }
 
-  handleFormSubmit(e) {
+  _updateOnBlur(e) {
+    if (e.target.value.length > 0) {
+      this.setState({
+        errors: { city: false },
+        btnIsEnabled: true
+      });
+    }
+  }
+
+  _validateFields(city, state) {
+    const toValidate = {
+      city: city.length === 0
+    };
+    this.setState({ errors: toValidate });
+    return toValidate;
+  }
+
+  _canBeSubmitted() {
+    const errors = this.validateFields(this.state.city, this.state.state);
+    const isDisabled = Object.keys(errors).some(x => errors[x]);
+    this.setState({ btnIsEnabled: !isDisabled });
+    return !isDisabled;
+  }
+
+  _handleFormSubmit(e) {
+    if (!this.canBeSubmitted()) {
+      e.preventDefault();
+      return;
+    }
     e.preventDefault();
     const formPayload = {
-      city: this.state.data.get("city"),
-      state: this.state.data.get("state"),
-      address: this.state.data.get("address"),
-      zip: this.state.data.get("zip")
+      city: this.state.city,
+      state: this.state.state,
+      address: this.state.address,
+      zip: this.state.zip
     };
-    const r = this.state.data.get("radius");
+    const r = this.state.radius;
     getResultsByAddress(formPayload, r);
   }
 
   render() {
+    const { errors, btnIsEnabled } = this.state;
+
     return (
-      <div className={`search-filters__address-box ${this.state.animateClass}`} role="group">
+      <div
+        className={`search-filters__address-box ${this.state.animateClass}`}
+        role="group"
+      >
         <FormField
           type={"text"}
           clasNames={"form@field__group"}
           placeholder={"City"}
-          label={"City + State"}
+          label={"City + State*"}
           key={"city_1"}
+          error={errors.city}
           controlFunc={this.handleCityField}
         >
           <select
@@ -131,6 +158,7 @@ class AddressFieldContainer extends React.Component {
             outline={true}
             isLoading={this.props.isLoading}
             controlFunc={this.handleFormSubmit}
+            isDisabled={!btnIsEnabled}
           >
             Submit
           </Btn>
